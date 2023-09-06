@@ -92,6 +92,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
               .requestMatchers("/api/test/**").permitAll()
               .requestMatchers("/spot/**").permitAll()
               .requestMatchers("/spot/addplace").permitAll()
+              .requestMatchers("/spot/load").permitAll()
               .anyRequest().authenticated()
         );
 

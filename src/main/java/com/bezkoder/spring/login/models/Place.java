@@ -3,17 +3,16 @@ package com.bezkoder.spring.login.models;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "places")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class Place {
-    public Place() {
-
-    }
 
 
     @Id
