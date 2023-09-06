@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/spot")
+@RequestMapping(value = "/spot", produces = "application/json;charset=UTF-8")
 public class PlacesController {
 
     @Autowired
     private PlaceRepository placeRepository;
 
-    @GetMapping("/places")
+    @GetMapping(value = "/places", produces = "application/json;charset=UTF-8")
     public ResponseEntity<List<Place>> getPlaces() {
         List<Place> places = placeRepository.findAll();
         return ResponseEntity.ok(places);
     }
-    @PostMapping("/addplace")
+    @PostMapping(value = "/addplace", produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> addPlace(@RequestBody Place place) {
         Place newPlace = new Place(place.getName(), place.getLatitude(), place.getLongitude(), place.getCategory());
         placeRepository.save(newPlace);
