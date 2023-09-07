@@ -18,6 +18,7 @@ import lombok.*;
                 @UniqueConstraint(columnNames = "username"),
         })
 public class Rank {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
