@@ -28,6 +28,7 @@ public class Rank {
     private String username;
     private Integer ranknum=0;
     private String message=null;
+    private String image;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -35,9 +36,4 @@ public class Rank {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public Rank(String username, Integer ranknum, String message) {
-        this.username = username;
-        this.ranknum = ranknum;
-        this.message = message;
-    }
 }
