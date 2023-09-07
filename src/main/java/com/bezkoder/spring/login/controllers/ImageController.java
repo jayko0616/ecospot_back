@@ -1,35 +1,51 @@
 package com.bezkoder.spring.login.controllers;
 
+import com.bezkoder.spring.login.models.Image;
+import com.bezkoder.spring.login.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.bezkoder.spring.login.repository.ImageRepository;
-import com.bezkoder.spring.login.security.services.ImageService;
-
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
-public class ImageController{
+public class ImageController {
 
-    private final ImageService imageService;
+    private static final String UPLOAD_DIR = "C:/images";
 
     @Autowired
-    public ImageController(ImageService imageService) {
-        this.imageService = imageService;
-    }
+    private ImageRepository imageRepository;
 
-    @PostMapping("/images")
-    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image) {
-        System.out.println(image);
+    @PostMapping("/api/images")
+    public ResponseEntity<String> uploadImage(@RequestBody byte[] imageBytes, @RequestHeader String latitude, @RequestHeader String longitude) {
         try {
-            // 이미지를 서버에 저장하고 저장된 파일 경로를 반환하는 서비스 메서드 호출
-            String imagePath = imageService.saveImage(image);
-            return ResponseEntity.ok(imagePath);
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String timestamp = dateFormat.format(new Date());
+            String uniqueFilename = timestamp + "_" + UUID.randomUUID().toString() + ".jpg";
+
+            File imageFile = new File(uploadDir, uniqueFilename);
+            try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+                fos.write(imageBytes);
+            }
+
+            // Image 엔티티를 생성하여 데이터베이스에 저장
+            Image image = new Image(uniqueFilename, latitude, longitude);
+            imageRepository.save(image);
+
+            return new ResponseEntity<>("Image uploaded successfully", HttpStatus.OK);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+            return new ResponseEntity<>("Image upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
