@@ -1,14 +1,13 @@
 package com.bezkoder.spring.login.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.bezkoder.spring.login.repository.ImageRepository;
 import com.bezkoder.spring.login.security.services.ImageService;
-
+import java.util.HashMap;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -22,14 +21,15 @@ public class ImageController{
     }
 
     @PostMapping("/images")
-    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image) {
+    public Map<String, String> uploadImage(@RequestPart("image") MultipartFile file) {
+        Map<String, String> response = new HashMap<>();
         try {
-            System.out.println("ss");
-            // 이미지를 서버에 저장하고 저장된 파일 경로를 반환하는 서비스 메서드 호출
-            String imagePath = imageService.uploadImage(image);
-            return ResponseEntity.ok(imagePath);
+            String imageUrl = imageService.saveImage(file); // 이미지를 저장하고 저장된 이미지 URL을 얻음
+            response.put("imageUrl", imageUrl);
+            response.put("message", "Image uploaded successfully");
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+            response.put("message", "Image upload failed");
         }
+        return response;
     }
 }
