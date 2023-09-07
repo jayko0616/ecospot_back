@@ -46,11 +46,26 @@ public class LoadController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping(value = "/updateMessage", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> updateMessage(@RequestParam Rank user) {
+    @PostMapping(value = "/updateMessage")
+    public ResponseEntity<String> updateMessage(@RequestBody Rank user) {
+        System.out.println(user);
         try {
             // userService를 사용하여 username에 해당하는 사용자의 message 값을 업데이트합니다.
             userService.updateMessageByUsername(user.getUsername(), user.getMessage());
+            return ResponseEntity.ok("Message updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update message");
+        }
+    }
+
+    @PostMapping(value = "/updateimage")
+    public ResponseEntity<String> updateimage(@RequestBody Rank user) {
+        System.out.println(user);
+        try {
+            // userService를 사용하여 username에 해당하는 사용자의 message 값을 업데이트합니다.
+            userService.updateImageByUsername(user.getUsername(), user.getImage());
             return ResponseEntity.ok("Message updated successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");

@@ -39,6 +39,7 @@ public class User {
 
   private Integer ranknum=0;
   private String message=null;
+  private String image="Panda";
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles", 
